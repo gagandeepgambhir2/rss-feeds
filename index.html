@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>RSS Feed</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.5.0/pagination.css"
+        integrity="sha512-TH+vnrhByFI2RzNvaHSqt6EwoJ9Bp+yGAGTWp84qTuTx315ebnypxtyGHpli55Rm4N4J+N/0W9xAL2b5RZ2ZSA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .card-text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            overflow: hidden;
+        }
+
+        .paginationlist {
+            display: inherit;
+        }
+
+        .loader {
+            pointer-events: all;
+            z-index: 99999;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            cursor: wait;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
+
+        }
+
+        .loader i {
+            position: absolute;
+            top: 50%
+        }
+    </style>
+</head>
+
+<body>
+    <section class="py-5 text-center container">
+        <div class="loader" style="display: none;">
+            <i class="fa fa-spinner fa-spin" style="font-size:80px;"></i>
+        </div>
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">RSS feeds</h1>
+                <p class="lead text-muted">Click to load feed</p>
+                <div class="btn-group rssfeedd">
+                    <a href="javascript:;" class="btn btn-primary" data-type="bbc"
+                        data-url="https://feeds.bbci.co.uk/news/rss.xml">BBC
+                        News</a>
+                    <a href="javascript:;" class="btn btn-outline-secondary" data-type="buzzfeed"
+                        data-url="https://www.buzzfeed.com/uk/index.xml">Buzzfeed</a>
+                    <a href="javascript:;" class="btn btn-outline-secondary" data-type="fliplet"
+                        data-url="https://fliplet.com/feed">Fliplet</a>
+                    <a href="javascript:;" class="btn btn-outline-secondary" data-type="ft"
+                        data-url="https://www.ft.com/world-uk">FT</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pagination -->
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item prev">
+                        <a class="page-link" href="javascript:;">Previous</a>
+                    </li>
+                    <span class="paginationlist">
+                        <script id="pagination-template" type="text/x-handlebars-template">
+                            {{#each this}}
+                            <li data-value={{this}} class="page-item {{#ifCond this 1}} active {{/ifCond}}">
+                                <a data-value={{this}} class="page-link" href="javascript:;">{{this}}</a>
+                            </li>
+                            {{/each}}
+                        </script>
+                    </span>
+                    <li class="page-item next">
+                        <a class="page-link" href="javascript:;">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Loading state UI -->
+        <div class="alert alert-secondary visually-hidden">Loading...</div>
+
+        <!-- Error state UI -->
+        <div class="alert alert-danger error" style="display: none;">
+            <h5>Unable to load feed</h5>
+            <!-- Show error message, if applicable -->
+            Feed could not be converted, probably not a valid RSS feed.<br>
+            <small><a href="#">Open feed in a new tab</a></small>
+        </div>
+
+        <!-- Feed (Show no more than 5 posts per page) -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <script id="feed-template" type="text/x-handlebars-template">
+                {{#each this}}
+                             <!-- Blog title -->
+            <div class="col">
+                <div class="card shadow-sm">
+                    <!-- Post thumbnail, if available -->
+                    <img src="{{this.thumbnail.url}}">
+                    <div class="card-body">
+                        <!-- Post title -->
+                        <h5>{{this.title}}</h5>
+                        <!-- Post description -->
+                        <p class="card-text"><small>{{stripScripts this.description }} &#8230;</small></p>
+                        <p><a href="{{this.link}}" target="_blank">Read more &rarr;</a></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Format date appropriately as per browser/device region format -->
+                            <small class="text-muted">{{ prettifyDate this.pubDate}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {{/each}}
+            </script>
+
+
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item prev">
+                        <a class="page-link" href="javascript:;">Previous</a>
+                    </li>
+                    <span class="paginationlist">
+                        <script id="pagination-template" type="text/x-handlebars-template">
+                            {{#each this}}
+                            <li data-value={{this}} class="page-item {{#ifCond this 1}} active {{/ifCond}}">
+                                <a data-value={{this}} class="page-link" href="javascript:;">{{this}}</a>
+                            </li>
+                            {{/each}}
+                        </script>
+                    </span>
+                    <li class="page-item next">
+                        <a class="page-link" href="javascript:;">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="jquery.xml2json.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
